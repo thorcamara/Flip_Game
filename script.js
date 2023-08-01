@@ -1,5 +1,5 @@
 const cards = document.querySelectorAll(".card"),
-timeTag = document.querySelector(".timer b"),
+timeTag = document.querySelector(".time b"),
 flipsTag = document.querySelector(".flips b"),
 refreshBtn = document.querySelector(".details button");
 
@@ -33,8 +33,8 @@ function flipCard({target: clickedCard}){
     }
     cardTwo = clickedCard;
     let cardOneIcon = cardOne.querySelector(".back-view i").classList.value;
-    cardTwoIcon = cardTwo.querySelector(".back-view i").classList.value;
-    matchedCards(cardOneIcon, cardTwoIcon);
+    let cardTwoIcon = cardTwo.querySelector(".back-view i").classList.value;
+    matchCards(cardOneIcon, cardTwoIcon);
   }
 }
 
@@ -44,7 +44,7 @@ function matchCards(icon1, icon2){
     if(matchedCards == 6 && timeLeft > 0){
       return clearInterval(timer);
     }
-    cardOne.removeEventList("click", flipCard);
+    cardOne.removeEventListener("click", flipCard);
     cardTwo.removeEventListener("click", flipCard);
     cardOne = cardTwo = "";
     return disableDeck = false;
@@ -57,8 +57,39 @@ function matchCards(icon1, icon2){
 
   setTimeout(() =>{
     cardOne.classList.remove("shake", "flip");
-    cartTwo.classList.remove("shake", "flip");
+    cardTwo.classList.remove("shake", "flip");
     cardOne = cardTwo = "";
     disableDeck = false;
   }, 1200);
+
 }
+
+function shuffleCards(){
+  timeLeft = maxTime;
+  flips = matchedCards = 0;
+  cardOne = cardTwo = "";
+  clearInterval(timer);
+  timeTag.innerText = timeLeft;
+  flipsTag.innerText = flips;
+  disableDeck = isPlaying = false;
+
+  let arr = ["bxl-tiktok", "bxl-instagram-alt", "bxl-facebook-circle", "bxl-twitter", "bxl-whatsapp", "bxl-youtube"];
+  arr.sort(() => Math.random() > 0.5 ? 1 : -1);
+
+  cards.forEach((card, index) =>{
+    card.classList.remove("flip");
+    let iconTag = card.querySelector(".back-view i");
+    setTimeout(() =>{
+      iconTag.classList.value = `bx ${arr[index]}`;
+    }, 500);
+    card.addEventListener("click", flipCard);
+  })
+}
+
+shuffleCards();
+
+refreshBtn.addEventListener("click", shuffleCards);
+
+cards.forEach(card =>{
+  card.addEventListener("click", flipCard);
+});
